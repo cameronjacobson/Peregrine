@@ -1,5 +1,8 @@
 {
 	"name":"peregrine/peregrine",
+	"require": {
+		"winks/m2php": "@dev"
+	},
 	"autoload": {
 		"psr-0": {
 			"Peregrine": "src/"
