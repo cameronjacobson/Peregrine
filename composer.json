@@ -1,0 +1,8 @@
+{
+	"name":"peregrine/peregrine",
+	"autoload": {
+		"psr-0": {
+			"Peregrine": "src/"
+		}
+	}
+}
