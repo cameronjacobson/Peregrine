@@ -3,7 +3,7 @@
 require_once(dirname(__DIR__).'/vendor/autoload.php');
 
 use Phalcon\Mvc\Micro;
-use Peregrine\Container;
+use Peregrine\Peregrine;
 
 $app = new Micro();
 
@@ -18,5 +18,5 @@ $app->get('/blog', function() use ($app) {
 	$app->response->send();
 });
 
-$container = new Container($app);
+$container = new Peregrine($app);
 $container->run();

@@ -8,26 +8,13 @@ use \Mongrel2\Connection;
 use \Phalcon\Mvc\Micro;
 use \Phalcon\DI\FactoryDefault;
 
-class Container
+class Peregrine
 {
 	public function __construct(Micro $app, FactoryDefault $di){
 		$this->sender_id = self::getId();
 		$this->connection = new Connection($this->sender_id, "tcp://127.0.0.1:9997", "tcp://127.0.0.1:9996");
 
-		$this->di = $di ?: new FactoryDefault();
-
-		$this->di->set('request', function () use ($req) {
-			$request = new Request($req);
-			return $request;
-		});
-
-		$this->di->set('response', function () use ($req, $conn) {
-			$response = new Response($req, $conn);
-			return $response;
-		});
-
 		$this->app = $app;
-		$this->app->setDI($this->di);
 		$this->registerRoutes();
 	}
 
@@ -54,11 +41,25 @@ class Container
 
 	public function run(){
 		while(true){
-			$this->req = $this->connection->recv();
+			$req = $this->connection->recv();
 
 			if($req->is_disconnect()){
 				continue;
 			}
+
+			$this->di = $di ?: new FactoryDefault();
+
+			$this->di->set('request', function () use ($req) {
+				$request = new Request($req);
+				return $request;
+			});
+
+			$this->di->set('response', function () use ($req, $conn) {
+				$response = new Response($req, $conn);
+				return $response;
+			});
+
+			$this->app->setDI($this->di);
 
 			$this->app->handle();
 		}
